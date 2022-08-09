@@ -1,14 +1,16 @@
-import type { NextPage } from 'next'
-import Head from 'next/head'
-import Image from 'next/image'
-
+import type { NextPage } from "next";
+import Head from "next/head";
+import Image from "next/image";
+import { useState } from "react";
+import AuthForm from "../components/AuthForm";
+import CreatePost from "../components/CreatePost";
+import useMe from "../hooks";
 
 const Home: NextPage = () => {
-  return (
-    <div >
-Hello
-    </div>
-  )
-}
+  const [loggedIn, setLoggedIn] = useState<boolean>(false);
+  const { user, isError, isLoading } = useMe();
 
-export default Home
+  return <div>{!user?.id ? <AuthForm /> : <CreatePost />}</div>;
+};
+
+export default Home;
