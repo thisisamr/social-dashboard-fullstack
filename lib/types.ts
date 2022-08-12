@@ -8,9 +8,16 @@ export interface jwtUser {
   iat: number;
   exp: number;
 }
-
+export interface AuthUserObject {
+  id: number;
+  createdat: Date;
+  updatedat: Date;
+  email: string;
+  firstname: string;
+  imageurl: string | null;
+}
 export interface NextApiHandlerExtended {
-  (req: NextApiRequest, res: NextApiResponse, user?: User): void;
+  (req: NextApiRequest, res: NextApiResponse, user?: AuthUserObject): void;
 }
 export interface authReq {
   email: string | null;

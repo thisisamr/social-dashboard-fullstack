@@ -23,9 +23,9 @@ const validateAuth = (
             email: true,
             createdat: true,
             imageurl: true,
+            updatedat: true,
           },
         });
-        console.log(user, "the user");
         if (!user) {
           throw new Error("Not a real User");
         }
