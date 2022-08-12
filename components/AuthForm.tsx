@@ -11,12 +11,14 @@ import {
   Heading,
   Text,
   useColorModeValue,
+  useToast,
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { mutate, useSWRConfig } from "swr";
 import fetcher from "../utils/fetcher";
 import { auth } from "../lib/authmodefetcher";
 import { authMode } from "../lib/types";
+import { CheckCircleIcon, MoonIcon } from "@chakra-ui/icons";
 
 export default function AuthForm() {
   const headingcolor = useColorModeValue("gray.700", "gray.400");
@@ -27,6 +29,7 @@ export default function AuthForm() {
   const [firstname, setFirstName] = useState("");
   const [avatar, setAvatar] = useState("");
   const { mutate, cache } = useSWRConfig();
+  const toast = useToast();
   return (
     <Stack spacing={8} mx={"auto"} maxW={"lg"} py={12} px={6}>
       <Stack align={"center"}>
@@ -54,6 +57,25 @@ export default function AuthForm() {
             e.preventDefault();
             if (loginForm) {
               const response = await auth(authMode.SIGNIN, { email, password });
+              response.message
+                ? toast({
+                    colorScheme: "red",
+                    isClosable: true,
+                    duration: 5000,
+                    description: response.message,
+                    position: "top",
+                    title: "error",
+                    status: "error",
+                  })
+                : toast({
+                    colorScheme: "green",
+                    duration: 5000,
+                    isClosable: true,
+                    status: "success",
+                    description: "you are now logged in ⚡️",
+                    icon: <CheckCircleIcon color={"green:500"} />,
+                    position: "top",
+                  });
               setLoading(false);
               await mutate("/me");
             }
@@ -65,6 +87,24 @@ export default function AuthForm() {
                 firstname,
                 avatar,
               });
+              response.message
+                ? toast({
+                    colorScheme: "red",
+                    isClosable: true,
+                    duration: 5000,
+                    description: response.message,
+                    position: "top",
+                    title: "error",
+                    status: "error",
+                  })
+                : toast({
+                    colorScheme: "green",
+                    duration: 5000,
+                    isClosable: true,
+                    status: "success",
+                    description: `Hello , ${response.firstname} 🤞  `,
+                    position: "top",
+                  });
               setLoading(false);
               await mutate("/me");
             }

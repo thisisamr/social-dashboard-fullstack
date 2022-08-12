@@ -46,6 +46,7 @@ export default async function signup(
     );
     res.json({
       id: user.id,
+      firstname: user.firstname,
       email: user.email,
       createdAt: user.createdat,
     });
