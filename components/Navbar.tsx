@@ -13,13 +13,16 @@ import {
   useColorModeValue,
 } from "@chakra-ui/react";
 import { useState } from "react";
+import useMe from "../hooks";
 import { Disabled_Profile_Text } from "../utils/constants";
 import LogOutButton from "./LogOutButton";
 import NavLink from "./NavLink";
 
 const Navbar = () => {
   const { colorMode, toggleColorMode } = useColorMode();
-  const [loggedIn] = useState(false);
+  const { user, isLoading, isError } = useMe();
+  const [loggedIn, setIsloggedIn] = useState(false);
+
   return (
     <Box bg={useColorModeValue("gray.100", "gray.900")} px={4}>
       <Flex h={16} alignItems="center" justifyContent={"space-between"}>
@@ -28,7 +31,7 @@ const Navbar = () => {
             Home
           </NavLink>
           <Tooltip
-            isDisabled={loggedIn}
+            isDisabled={user?.id ? true : false}
             hasArrow
             label={Disabled_Profile_Text}
             background={"red.600"}
@@ -48,7 +51,7 @@ const Navbar = () => {
         </HStack>
         <Flex alignItems={"center"}>
           <Stack direction={"row"} spacing={7}>
-            {!loggedIn ? (
+            {!user?.id ? (
               <Stack direction={"row"} alignItems="center">
                 <Box>
                   <Badge variant={"outline"} colorScheme={"red"}>
@@ -72,10 +75,10 @@ const Navbar = () => {
                 label={"user email"}
                 bg={"green.600"}
               >
-                <Avatar size={"sm"} src={loggedIn ? "" : ""}>
+                <Avatar size={"sm"} src={user?.imageurl ? user.imageurl : ""}>
                   <AvatarBadge
                     boxSize={"1.25em"}
-                    bg={loggedIn ? "green.500" : "tomato"}
+                    bg={user?.id ? "green.500" : "tomato"}
                   ></AvatarBadge>
                 </Avatar>
               </Tooltip>

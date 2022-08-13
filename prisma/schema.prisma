@@ -17,7 +17,7 @@ model User {
   email String @unique
   password String
   firstname String
-  imageurl String?
+  imageurl String? 
   posts Post[]
   comments Comment[]
   likes Like[]
