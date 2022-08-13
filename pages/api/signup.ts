@@ -11,7 +11,7 @@ export default async function signup(
 ) {
   if (req.method === "POST") {
     const salt = bcrypt.genSaltSync();
-    const { email, password, firstname, imageurl } = req.body;
+    const { email, password, firstname, avatar } = req.body;
     if (!email || !password || !firstname) {
       res.status(400).json({ message: "invalid user input" });
     }
@@ -22,7 +22,7 @@ export default async function signup(
           email: email,
           password: bcrypt.hashSync(password, salt),
           firstname,
-          imageurl,
+          imageurl: avatar,
         },
       });
     } catch (error) {
