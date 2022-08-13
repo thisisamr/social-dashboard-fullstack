@@ -27,6 +27,7 @@ model Post{
   @@map("posts")
   id Int @id @default(autoincrement())
   createdat DateTime @default(now())
+  text String
   authorid Int
   auhtor User @relation(fields: [authorid],references: [id])
   updatedat DateTime @updatedAt
