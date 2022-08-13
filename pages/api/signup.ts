@@ -4,6 +4,7 @@ import { prisma } from "../../prisma/prisma";
 import cookie from "cookie";
 import { NextApiRequest, NextApiResponse } from "next";
 import { User } from "@prisma/client";
+
 export default async function signup(
   req: NextApiRequest,
   res: NextApiResponse
@@ -11,6 +12,9 @@ export default async function signup(
   if (req.method === "POST") {
     const salt = bcrypt.genSaltSync();
     const { email, password, firstname, imageurl } = req.body;
+    if (!email || !password || !firstname) {
+      res.status(400).json({ message: "invalid user input" });
+    }
     let user: User;
     try {
       user = await prisma.user.create({
