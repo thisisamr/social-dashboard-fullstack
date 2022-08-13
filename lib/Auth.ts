@@ -4,13 +4,14 @@ import { NextApiHandler, NextApiRequest, NextApiResponse } from "next";
 import { jwtUser, NextApiHandlerExtended } from "./types";
 import { prisma } from "../prisma/prisma";
 
+// there is a bug here we should return null or empty object as the unauthorized user
 const validateAuth = (
   controller: NextApiHandlerExtended
 ): NextApiHandlerExtended => {
   return async (req: NextApiRequest, res: NextApiResponse) => {
     const token = req.cookies.T_ACCESS_TOKEN || req.headers.authorization;
+    let user;
     if (token) {
-      let user;
       try {
         const key = new TextEncoder().encode(process.env.TOKENSECRET);
         const { payload } = await jose.jwtVerify(token, key);
@@ -33,11 +34,8 @@ const validateAuth = (
         console.log(error);
         return res.status(401).json({ error: "Not Authorized" });
       }
-      // need to create an interface IAuthUser to reflect the type returned from the db
-      return controller(req, res, user);
-    } else {
-      return res.status(401).json({ error: "Not Authorized" });
     }
+    return controller(req, res, user);
   };
 };
 

@@ -9,6 +9,9 @@ const signin = async (req: NextApiRequest, res: NextApiResponse) => {
     return res.status(404).json({ message: "unsupported http verb" });
   }
   const { email, password } = req.body;
+  if (!email || !password) {
+    return res.status(400).json({ message: "invalid user input" });
+  }
   try {
     const user = await prisma.user.findUnique({
       where: {
@@ -40,9 +43,9 @@ const signin = async (req: NextApiRequest, res: NextApiResponse) => {
     } else {
       res.status(401).json({ message: "user or password is incorrect" });
     }
-  } catch (error) {
+  } catch (error: Error | any) {
     console.log(error);
-    return res.status(500).json({ message: error });
+    return res.status(500).json({ message: error.message });
   }
 };
 export default signin;
