@@ -3,6 +3,7 @@ import * as jose from "jose";
 import { NextApiHandler, NextApiRequest, NextApiResponse } from "next";
 import { jwtUser, NextApiHandlerExtended } from "./types";
 import { prisma } from "../prisma/prisma";
+import { User } from "@prisma/client";
 
 // there is a bug here we should return null or empty object as the unauthorized user
 const validateAuth = (
