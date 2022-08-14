@@ -18,7 +18,7 @@ export default async function handler(
     const user = await validateToken(token);
     const { text } = req.body;
 
-    if (!text) {
+    if (!text || text.length == 0) {
       return res.status(400).json({ message: "Bad input" });
     }
     const postCreated = await prisma.post.create({
@@ -32,7 +32,7 @@ export default async function handler(
       },
     });
     return res.status(201).json(postCreated);
-  } catch (error) {
-    return res.status(401).send(error);
+  } catch (error: Error | any) {
+    return res.status(401).json({ error: error.message });
   }
 }

@@ -10,7 +10,7 @@ const Home: NextPage = () => {
   const [loggedIn, setLoggedIn] = useState<boolean>(false);
   const { user, isError, isLoading } = useMe();
 
-  return <div>{!user?.id ? <AuthForm /> : <CreatePost />}</div>;
+  return <div>{!user?.id ? <AuthForm /> : <CreatePost user={user} />}</div>;
 };
 
 export default Home;
