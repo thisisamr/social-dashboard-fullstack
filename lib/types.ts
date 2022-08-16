@@ -1,4 +1,4 @@
-import { User } from "@prisma/client";
+import { Like, Post, User } from "@prisma/client";
 import { NextApiRequest, NextApiResponse } from "next";
 
 export interface jwtUser {
@@ -29,3 +29,13 @@ export enum authMode {
   SIGNIN = "signin",
   SIGNUP = "signup",
 }
+
+export type IPostWithAutherCommentsLikes = Post & {
+  auhtor: User;
+  comments: (Comment & {
+    author: User;
+  })[];
+  likes: (Like & {
+    author: User;
+  })[];
+};

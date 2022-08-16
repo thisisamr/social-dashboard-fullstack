@@ -1,13 +1,17 @@
 import useSWR from "swr";
 import fetcher from "../utils/fetcher";
 import { Post, User } from "@prisma/client";
+import { IPostWithAutherCommentsLikes } from "../lib/types";
 
 const usePost = (): {
-  posts: Post[] | undefined;
+  posts: IPostWithAutherCommentsLikes[] | undefined;
   isLoading: boolean;
   isError: any;
 } => {
-  const { data, error } = useSWR<Post[], any>("/post", fetcher);
+  const { data, error } = useSWR<IPostWithAutherCommentsLikes[], any>(
+    "post",
+    fetcher
+  );
   return {
     posts: data,
     isLoading: !data && !error,
