@@ -15,9 +15,9 @@ const LogOutButton = () => {
       leftIcon={<LockIcon />}
       onClick={async () => {
         try {
-          setLoading(!loading);
+          setLoading(true);
           const res = await logout("/logout");
-          setLoading(!loading);
+          setLoading(false);
           toast({
             title: "Success",
             status: "success",
@@ -28,9 +28,9 @@ const LogOutButton = () => {
             position: "top",
           });
 
-          mutate("/me");
+          mutate("me");
         } catch (error) {
-          setLoading(!loading);
+          setLoading(false);
           console.log(error);
 
           toast({

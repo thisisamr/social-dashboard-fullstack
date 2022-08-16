@@ -77,7 +77,7 @@ export default function AuthForm() {
                     position: "top",
                   });
               setLoading(false);
-              await mutate("/me");
+              await mutate("me");
             }
             //send to signup route
             else {
@@ -106,7 +106,7 @@ export default function AuthForm() {
                     position: "top",
                   });
               setLoading(false);
-              await mutate("/me");
+              await mutate("me");
             }
           }}
         >

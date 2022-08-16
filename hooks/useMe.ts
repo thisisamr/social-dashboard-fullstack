@@ -7,7 +7,7 @@ const useMe = (): {
   isLoading: boolean;
   isError: any;
 } => {
-  const { data, error } = useSWR<User, any>("/me", fetcher);
+  const { data, error } = useSWR<User, any>("me", fetcher);
   return {
     user: data,
     isLoading: !data && !error,
