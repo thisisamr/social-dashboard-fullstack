@@ -12,11 +12,10 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import React, { useState } from "react";
-import useMe from "../hooks";
-import usePost from "../hooks/usePost";
 import { createPost } from "../lib/createPostfetcher";
 import { CheckCircleIcon, CheckIcon } from "@chakra-ui/icons";
 import { AuthUserObject } from "../lib/types";
+import { mutate } from "swr";
 
 const CreatePost: React.FC<{ user: AuthUserObject }> = () => {
   const toast = useToast();
@@ -24,7 +23,6 @@ const CreatePost: React.FC<{ user: AuthUserObject }> = () => {
   const [text, setText] = useState("");
   const [state, setState] = useState("initial");
   const [loading, setIsloading] = useState(false);
-  const { posts, isLoading: isloadindPosts, isError: isErrorPosts } = usePost();
   return (
     <Flex minH={"20vh"} align={"center"} justify="center">
       <Container
@@ -54,6 +52,7 @@ const CreatePost: React.FC<{ user: AuthUserObject }> = () => {
                 throw new Error(response.error);
               }
               setIsloading(false);
+              mutate("post", [{ ...response }]);
               toast({
                 status: "success",
                 colorScheme: "green",
@@ -61,6 +60,8 @@ const CreatePost: React.FC<{ user: AuthUserObject }> = () => {
                 title: "success",
                 icon: <CheckCircleIcon color={"green.500"} />,
                 description: "Successfully Posted ",
+                isClosable: true,
+                duration: 1000,
               });
               setSubmitted(true);
               setText("");
@@ -82,27 +83,27 @@ const CreatePost: React.FC<{ user: AuthUserObject }> = () => {
           <FormControl>
             <Input
               variant="solid"
+              bgColor={"gray.100"}
+              color={"gray.800"}
               borderWidth={1}
               borderColor={useColorModeValue("gray.300", "gray.700")}
               type="text"
               required
               placeholder="what's on your mind ?"
+              _placeholder={{ color: "gray.400" }}
               value={text}
               onChange={(e) => setText(e.target.value)}
             />
           </FormControl>
           <Button
             type="submit"
-            width={["100%", "100px"]}
+            width={75}
             variant={"solid"}
+            colorScheme="twitter"
             isLoading={loading}
             disabled={text.length == 0}
           >
-            {submitted ? (
-              <CheckCircleIcon color={"#29FB40"} />
-            ) : (
-              <Text>Go</Text>
-            )}
+            {submitted ? <CheckIcon color={"#29FB40"} /> : <Text>Go</Text>}
           </Button>
         </Stack>
       </Container>
