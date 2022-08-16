@@ -70,9 +70,12 @@ const Navbar = () => {
             />
             <HStack>
               <Tooltip
-                isDisabled={!loggedIn}
+                mr={2}
+                mt={2}
+                fontSize={"xs"}
+                isDisabled={!user?.id}
                 hasArrow
-                label={"user email"}
+                label={user?.email}
                 bg={"green.600"}
               >
                 <Avatar size={"sm"} src={user?.imageurl ? user.imageurl : ""}>
