@@ -15,6 +15,7 @@ CREATE TABLE "users" (
 CREATE TABLE "posts" (
     "id" SERIAL NOT NULL,
     "createdat" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "text" TEXT NOT NULL,
     "authorid" INTEGER NOT NULL,
     "updatedat" TIMESTAMP(3) NOT NULL,
 
@@ -27,6 +28,8 @@ CREATE TABLE "comments" (
     "postid" INTEGER NOT NULL,
     "text" TEXT NOT NULL,
     "authorid" INTEGER NOT NULL,
+    "createdat" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedat" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "comments_pkey" PRIMARY KEY ("id")
 );

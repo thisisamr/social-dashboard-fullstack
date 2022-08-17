@@ -42,6 +42,8 @@ model Comment{
   post Post? @relation(fields: [postid],references: [id])
   authorid Int
   author User @relation(fields: [authorid],references: [id])
+  createdat DateTime @default(now())
+  updatedat DateTime @updatedAt
 
 }
 model Like{
