@@ -11,7 +11,7 @@ const validateAuth = (
 ): NextApiHandlerExtended => {
   return async (req: NextApiRequest, res: NextApiResponse) => {
     const token = req.cookies.T_ACCESS_TOKEN || req.headers.authorization;
-    let user;
+    let user = null;
     if (token) {
       try {
         const key = new TextEncoder().encode(process.env.TOKENSECRET);
@@ -32,8 +32,7 @@ const validateAuth = (
           throw new Error("Not a real User");
         }
       } catch (error) {
-        console.log(error);
-        return res.status(401).json({ error: "Not Authorized" });
+        return res.status(401).json(null);
       }
     }
     return controller(req, res, user);

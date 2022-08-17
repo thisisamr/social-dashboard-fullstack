@@ -3,13 +3,13 @@ import fetcher from "../utils/fetcher";
 import { User } from "@prisma/client";
 
 const useMe = (): {
-  user: User | undefined;
+  userObj: User | null | undefined;
   isLoading: boolean;
   isError: any;
 } => {
-  const { data, error } = useSWR<User, any>("me", fetcher);
+  const { data, error } = useSWR<User | null, any>("me", fetcher);
   return {
-    user: data,
+    userObj: data,
     isLoading: !data && !error,
     isError: error,
   };

@@ -20,7 +20,7 @@ import NavLink from "./NavLink";
 
 const Navbar = () => {
   const { colorMode, toggleColorMode } = useColorMode();
-  const { user, isLoading, isError } = useMe();
+  const { userObj, isLoading, isError } = useMe();
   const [loggedIn, setIsloggedIn] = useState(false);
 
   return (
@@ -31,9 +31,9 @@ const Navbar = () => {
             Home
           </NavLink>
           <Tooltip
-            isDisabled={user?.id ? true : false}
+            isDisabled={userObj == null ? true : false}
             hasArrow
-            label={Disabled_Profile_Text}
+            label={"Disabled_Profile_Text"}
             background={"red.600"}
           >
             <HStack
@@ -41,7 +41,7 @@ const Navbar = () => {
               spacing={4}
               display={{ base: "none", md: "flex" }}
             >
-              <div className={loggedIn ? "" : "link-disabled"}>
+              <div className={userObj !== null ? "" : "link-disabled"}>
                 <NavLink to={"/profile"} mr={4}>
                   Profile
                 </NavLink>
@@ -51,7 +51,7 @@ const Navbar = () => {
         </HStack>
         <Flex alignItems={"center"}>
           <Stack direction={"row"} spacing={7}>
-            {!user?.id ? (
+            {userObj == null ? (
               <Stack direction={"row"} alignItems="center">
                 <Box>
                   <Badge variant={"outline"} colorScheme={"red"}>
@@ -73,15 +73,18 @@ const Navbar = () => {
                 mr={2}
                 mt={2}
                 fontSize={"xs"}
-                isDisabled={!user?.id}
+                isDisabled={userObj == null}
                 hasArrow
-                label={user?.email}
+                label={userObj?.email}
                 bg={"green.600"}
               >
-                <Avatar size={"sm"} src={user?.imageurl ? user.imageurl : ""}>
+                <Avatar
+                  size={"sm"}
+                  src={userObj?.imageurl as string | undefined}
+                >
                   <AvatarBadge
                     boxSize={"1.25em"}
-                    bg={user?.id ? "green.500" : "tomato"}
+                    bg={userObj !== null ? "green.500" : "tomato"}
                   ></AvatarBadge>
                 </Avatar>
               </Tooltip>

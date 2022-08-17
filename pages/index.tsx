@@ -11,16 +11,16 @@ import usePost from "../hooks/usePost";
 
 const Home: NextPage = () => {
   const [loggedIn, setLoggedIn] = useState<boolean>(false);
-  const { user, isError, isLoading } = useMe();
+  const { userObj, isError, isLoading } = useMe();
   const { posts, isLoading: isloadindPosts, isError: isErrorPosts } = usePost();
 
   return (
     <div>
-      {!user?.id ? <AuthForm /> : <CreatePost user={user} />}
+      {userObj === null ? <AuthForm /> : <CreatePost user={userObj} />}
       <Flex justify={"center"} align="center">
         <Stack mx={"auto"} spacing={0} width={1200} py={12} px={6}>
           {posts?.map((post, index) => {
-            return <Post post={post} me={user?.email} key={post.id} />;
+            return <Post post={post} me={userObj?.email} key={post.id} />;
           })}
         </Stack>
       </Flex>

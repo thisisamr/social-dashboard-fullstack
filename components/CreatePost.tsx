@@ -17,7 +17,7 @@ import { CheckCircleIcon, CheckIcon } from "@chakra-ui/icons";
 import { AuthUserObject } from "../lib/types";
 import { mutate } from "swr";
 
-const CreatePost: React.FC<{ user: AuthUserObject }> = () => {
+const CreatePost: React.FC<{ user: AuthUserObject | undefined }> = () => {
   const toast = useToast();
   const [submitted, setSubmitted] = useState(false);
   const [text, setText] = useState("");
