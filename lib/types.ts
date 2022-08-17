@@ -1,4 +1,4 @@
-import { Like, Post, User } from "@prisma/client";
+import { Like, Post, User, Comment } from "@prisma/client";
 import { NextApiRequest, NextApiResponse } from "next";
 
 export interface jwtUser {
@@ -10,14 +10,18 @@ export interface jwtUser {
 }
 export interface AuthUserObject {
   id: number;
-  createdat: Date;
-  updatedat: Date;
+  createdat?: Date;
+  updatedat?: Date;
   email: string;
   firstname: string;
-  imageurl: string | null;
+  imageurl?: string | null;
 }
 export interface NextApiHandlerExtended {
-  (req: NextApiRequest, res: NextApiResponse, user?: AuthUserObject): void;
+  (
+    req: NextApiRequest,
+    res: NextApiResponse,
+    user?: AuthUserObject | null
+  ): void;
 }
 export interface authReq {
   email: string | null;
