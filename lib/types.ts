@@ -43,3 +43,11 @@ export type IPostWithAutherCommentsLikes = Post & {
     author: User;
   })[];
 };
+export type CommentwithAuthor = Comment & {
+  author: {
+    id: number;
+    email: string;
+    firstname: string;
+    imageurl: string | null;
+  };
+};
