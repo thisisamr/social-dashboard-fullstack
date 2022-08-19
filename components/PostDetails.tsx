@@ -10,6 +10,7 @@ import {
   useColorModeValue,
 } from "@chakra-ui/react";
 import useMe from "../hooks";
+import useComments from "../hooks/useComments";
 import { IPostWithAutherCommentsLikes } from "../lib/types";
 import AuthForm from "./AuthForm";
 import CommentComponent from "./Comment";
@@ -20,6 +21,12 @@ const PostDetails: React.FC<{
 }> = ({ post, error: err }) => {
   const { userObj, isError, isLoading } = useMe();
   const color = useColorModeValue("white", "gray.900");
+  const {
+    comments,
+    isError: errorComments,
+    isLoading: loadingComments,
+  } = useComments();
+
   return (
     <>
       <Flex align={"center"} justify="center">
@@ -54,7 +61,15 @@ const PostDetails: React.FC<{
                   />
                   <Stack direction={"column"} spacing={0} fontSize="sm">
                     <Text fontWeight={600}>{post?.auhtor.email}</Text>
-                    <Text color={"gray.500"}>
+                    <Text
+                      color={"gray.500"}
+                      fontSize={["sm"]}
+                      _hover={{
+                        color: "gray.100",
+                        transition: "1s",
+                        cursor: "pointer",
+                      }}
+                    >
                       {post?.createdat.toUTCString()}
                     </Text>
                   </Stack>
@@ -80,8 +95,8 @@ const PostDetails: React.FC<{
         <Divider width={"80%"} orientation="horizontal" />
       </Center>
       {userObj !== null ? <CommentForm id={post?.id} /> : <AuthForm />}
-      {post?.comments.map((c, i) => {
-        return <CommentComponent key={i} comment={c} />;
+      {comments?.map((c, i) => {
+        return <CommentComponent key={i} commentwithauthor={c} />;
       })}
     </>
   );
