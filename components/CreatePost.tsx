@@ -52,7 +52,6 @@ const CreatePost: React.FC<{ user: AuthUserObject | undefined }> = () => {
                 throw new Error(response.error);
               }
               setIsloading(false);
-              mutate("post", [{ ...response }]);
               toast({
                 status: "success",
                 colorScheme: "green",

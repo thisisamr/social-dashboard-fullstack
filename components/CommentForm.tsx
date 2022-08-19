@@ -13,6 +13,7 @@ import {
 import { HiOutlineAnnotation } from "react-icons/hi";
 import { createComment } from "../lib/createCommentFetcher";
 import { mutate } from "swr";
+import { CheckIcon } from "@chakra-ui/icons";
 const CommentForm: FC<{ id: number }> = ({ id }) => {
   const [text, settext] = useState("");
   const { userObj, isError, isLoading } = useMe();
@@ -36,7 +37,35 @@ const CommentForm: FC<{ id: number }> = ({ id }) => {
             Throw a comment
           </Text>
         </Stack>
-        <Stack>
+        <Stack
+          direction={"row"}
+          w={"full"}
+          as="form"
+          onSubmit={async (e) => {
+            e.preventDefault();
+            try {
+              setLoading(true);
+              await createComment("comment/create", { pid: id, text });
+              setLoading(false);
+              toast({
+                status: "success",
+                position: "top",
+                isClosable: true,
+                colorScheme: "orange",
+                title: <CheckIcon />,
+                description: "🚀 Nice",
+              });
+              const response = await mutate("comment/getAllByPostId");
+              console.log(response);
+            } catch (error: any) {
+              setLoading(false);
+              console.log(error);
+              toast({
+                status: "error",
+              });
+            }
+          }}
+        >
           <Input
             value={text}
             onChange={(e) => settext(e.target.value)}
@@ -51,21 +80,7 @@ const CommentForm: FC<{ id: number }> = ({ id }) => {
             }}
           />
           <Button
-            onClick={async () => {
-              try {
-                setLoading(true);
-                await createComment("comment/create", { pid: id, text });
-                setLoading(false);
-                toast({ status: "success", position: "top" });
-                mutate("post/");
-              } catch (error: any) {
-                setLoading(false);
-                console.log(error);
-                toast({
-                  status: "error",
-                });
-              }
-            }}
+            type="submit"
             bg={"blue.400"}
             rounded={"full"}
             color="white"
