@@ -14,8 +14,7 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { useState } from "react";
-import { mutate, useSWRConfig } from "swr";
-import fetcher from "../utils/fetcher";
+import { useSWRConfig } from "swr";
 import { auth } from "../lib/authmodefetcher";
 import { authMode } from "../lib/types";
 import { CheckCircleIcon, MoonIcon } from "@chakra-ui/icons";
