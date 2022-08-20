@@ -10,12 +10,12 @@ export default async function handler(
   if (req.method !== "GET") {
     return res.status(404).json({ message: "unsupported http verb" });
   }
-  const token = req.cookies.T_ACCESS_TOKEN || req.headers.authorization;
-  if (!token) {
-    return res.status(401).json({ message: "no auth" });
-  }
+  // const token = req.cookies.T_ACCESS_TOKEN || req.headers.authorization;
+  // if (!token) {
+  //   return res.status(401).json({ message: "no auth" });
+  // }
   try {
-    const user = await validateToken(token);
+    // const user = await validateToken(token);
     const { pid } = req.body;
     const comments = await prisma.comment.findMany({
       where: {
