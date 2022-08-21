@@ -12,14 +12,17 @@ import {
   Text,
   useColorModeValue,
   useToast,
+  Skeleton,
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { useSWRConfig } from "swr";
 import { auth } from "../lib/authmodefetcher";
 import { authMode } from "../lib/types";
-import { CheckCircleIcon, MoonIcon } from "@chakra-ui/icons";
+import { CheckCircleIcon, MoonIcon, WarningIcon } from "@chakra-ui/icons";
+import { useRouter } from "next/router";
+import { User } from "@prisma/client";
 
-export default function AuthForm() {
+const AuthForm = () => {
   const headingcolor = useColorModeValue("gray.700", "gray.400");
   const [loginForm, setLoginForm] = useState(true);
   const [email, setEmail] = useState("");
@@ -29,6 +32,7 @@ export default function AuthForm() {
   const [avatar, setAvatar] = useState("");
   const { mutate, cache } = useSWRConfig();
   const toast = useToast();
+  const router = useRouter();
   return (
     <Stack spacing={8} mx={"auto"} maxW={"lg"} py={12} px={6}>
       <Stack align={"center"}>
@@ -55,57 +59,93 @@ export default function AuthForm() {
             setLoading(true);
             e.preventDefault();
             if (loginForm) {
-              const response = await auth(authMode.SIGNIN, { email, password });
-              response.message
-                ? toast({
-                    colorScheme: "red",
-                    isClosable: true,
-                    duration: 5000,
-                    description: response.message,
-                    position: "top",
-                    title: "error",
-                    status: "error",
-                  })
-                : toast({
-                    colorScheme: "green",
-                    duration: 5000,
-                    isClosable: true,
-                    status: "success",
-                    description: "you are now logged in ⚡️",
-                    icon: <CheckCircleIcon color={"green:500"} />,
-                    position: "top",
-                  });
-              setLoading(false);
-              await mutate("me");
+              try {
+                const response = await auth(authMode.SIGNIN, {
+                  email,
+                  password,
+                });
+                toast({
+                  colorScheme: "green",
+                  duration: 5000,
+                  isClosable: true,
+                  status: "success",
+                  description: "you are now logged in ⚡️",
+                  icon: <CheckCircleIcon color={"green:500"} />,
+                  position: "top",
+                });
+                setLoading(false);
+                await mutate("me");
+                await router.push("/");
+              } catch (error: any) {
+                let msg: string = "";
+                switch (error?.info?.error?.code) {
+                  case "P1001":
+                    msg = "Cannot reach DbServers Check with the system admin";
+                    break;
+                  default:
+                    msg = error.info.error;
+
+                    break;
+                }
+                toast({
+                  colorScheme: "red",
+                  isClosable: true,
+                  duration: 5000,
+                  description: msg,
+                  position: "top",
+                  title: "error",
+                  status: "error",
+                  icon: <WarningIcon color={"red.500"} />,
+                });
+                setLoading(false);
+              }
             }
             //send to signup route
             else {
-              const response = await auth(authMode.SIGNUP, {
-                email,
-                password,
-                firstname,
-                avatar,
-              });
-              response.message
-                ? toast({
-                    colorScheme: "red",
-                    isClosable: true,
-                    duration: 5000,
-                    description: response.message,
-                    position: "top",
-                    title: "error",
-                    status: "error",
-                  })
-                : toast({
-                    colorScheme: "green",
-                    duration: 5000,
-                    isClosable: true,
-                    status: "success",
-                    description: `Hello , ${response.firstname} 🤞  `,
-                    position: "top",
-                  });
-              setLoading(false);
-              await mutate("me");
+              try {
+                const response = await auth(authMode.SIGNUP, {
+                  email,
+                  password,
+                  firstname,
+                  avatar,
+                });
+                toast({
+                  colorScheme: "green",
+                  duration: 5000,
+                  isClosable: true,
+                  status: "success",
+                  description: `Hello , ${response.firstname} 🤞  `,
+                  position: "top",
+                });
+                setLoading(false);
+                await mutate("me");
+                await router.push("/");
+              } catch (error: any) {
+                let msg: string = "";
+                switch (error?.info?.error?.code) {
+                  case "P1001":
+                    msg = "Cannot reach DbServers Check with the system admin";
+                    break;
+                  case "P2002":
+                    msg = "a user with the same email already exists";
+                    break;
+                  default:
+                    msg = error.info.error;
+
+                    break;
+                }
+                toast({
+                  colorScheme: "red",
+                  isClosable: true,
+                  duration: 5000,
+                  description: msg,
+                  position: "top",
+                  title: "error",
+                  status: "error",
+                  icon: <WarningIcon color={"red.500"} />,
+                });
+                setLoading(false);
+              }
             }
           }}
         >
@@ -189,4 +229,5 @@ export default function AuthForm() {
       </Box>
     </Stack>
   );
-}
+};
+export default AuthForm;
