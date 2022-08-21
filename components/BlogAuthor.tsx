@@ -14,7 +14,11 @@ const BlogAuthor: FC<{
 }> = ({ author, createdAt }) => {
   return (
     <HStack mt={2} spacing={2} display={"flex"} alignItems="center">
-      <Avatar boxSize={"40px"} src={author?.imageurl || ""} />
+      <Avatar
+        boxSize={"40px"}
+        src={author?.imageurl || ""}
+        name={author?.firstname}
+      />
       <Text fontWeight={"md"}>{author?.firstname}</Text>
       <Text fontWeight={"md"} fontSize={["x-small", "xs"]} color={"gray.500"}>
         {createdAt}
