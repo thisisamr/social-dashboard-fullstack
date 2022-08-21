@@ -13,11 +13,10 @@ import {
 } from "@chakra-ui/react";
 import React, { useState } from "react";
 import { createPost } from "../lib/createPostfetcher";
-import { CheckCircleIcon, CheckIcon } from "@chakra-ui/icons";
-import { AuthUserObject } from "../lib/types";
+import { CheckCircleIcon, CheckIcon, WarningIcon } from "@chakra-ui/icons";
 import { mutate } from "swr";
 
-const CreatePost: React.FC<{ user: AuthUserObject | undefined }> = () => {
+const CreatePost = () => {
   const toast = useToast();
   const [submitted, setSubmitted] = useState(false);
   const [text, setText] = useState("");
@@ -62,6 +61,8 @@ const CreatePost: React.FC<{ user: AuthUserObject | undefined }> = () => {
                 isClosable: true,
                 duration: 1000,
               });
+              await mutate("post");
+
               setSubmitted(true);
               setText("");
               setTimeout(() => {
@@ -74,6 +75,7 @@ const CreatePost: React.FC<{ user: AuthUserObject | undefined }> = () => {
                 position: "top",
                 title: "error",
                 description: "Error creating a post",
+                icon: <WarningIcon color={"red.500"} />,
               });
               setIsloading(false);
             }
