@@ -39,7 +39,7 @@ model Comment{
   id Int @id @default(autoincrement())
   postid Int
   text String
-  post Post? @relation(fields: [postid],references: [id])
+  post Post? @relation(fields: [postid],references: [id],onDelete:Cascade)
   authorid Int
   author User @relation(fields: [authorid],references: [id])
   createdat DateTime @default(now())
@@ -48,10 +48,10 @@ model Comment{
 }
 model Like{
   @@map("likes")
-id Int @id
+id Int @id @default(autoincrement())
 createdat DateTime @default(now())
 postid Int
-post Post? @relation(fields: [postid],references: [id])
+post Post? @relation(fields: [postid],references: [id],onDelete: Cascade)
 authorid Int
 author User @relation(fields: [authorid],references: [id])
 }
