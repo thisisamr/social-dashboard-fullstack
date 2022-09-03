@@ -9,23 +9,26 @@ import {
   Text,
   useColorModeValue,
 } from "@chakra-ui/react";
+import { useState } from "react";
 import useMe from "../hooks";
 import useComments from "../hooks/useComments";
 import { IPostWithAutherCommentsLikes } from "../lib/types";
 import AuthForm from "./AuthForm";
 import CommentComponent from "./Comment";
 import CommentForm from "./CommentForm";
+import Likebutton from "./LikeButton";
 const PostDetails: React.FC<{
   post: IPostWithAutherCommentsLikes;
   error: any;
 }> = ({ post, error: err }) => {
   const { userObj, isError, isLoading } = useMe();
   const color = useColorModeValue("white", "gray.900");
+  const [numberOfLikes, setNumberoflikes] = useState(post?.likes.length);
   const {
     comments,
     isError: errorComments,
     isLoading: loadingComments,
-  } = useComments();
+  } = useComments(post?.id);
 
   return (
     <>
@@ -77,8 +80,13 @@ const PostDetails: React.FC<{
                 <Stack direction={"row"} justify="center" spacing={6}>
                   <Stack spacing={0} align="center">
                     <Text fontSize={"sm"} color="gray.500">
-                      {post?.likes.length}
+                      {numberOfLikes}
                     </Text>
+                    <Likebutton
+                      pid={post?.id}
+                      authorEmail={userObj?.email}
+                      setNumberoflikes={setNumberoflikes}
+                    />
                   </Stack>
                 </Stack>
               </Box>
@@ -95,9 +103,11 @@ const PostDetails: React.FC<{
         <Divider width={"80%"} orientation="horizontal" />
       </Center>
       {userObj !== null ? <CommentForm id={post?.id} /> : <AuthForm />}
-      {comments?.map((c, i) => {
-        return <CommentComponent key={i} commentwithauthor={c} />;
-      })}
+      {comments
+        ? comments?.map((c, i) => {
+            return <CommentComponent key={i} commentwithauthor={c} />;
+          })
+        : ""}
     </>
   );
 };
