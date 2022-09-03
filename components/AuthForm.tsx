@@ -196,9 +196,7 @@ const AuthForm = () => {
               align={"start"}
               justify={"space-between"}
             >
-              <Checkbox onChange={(e) => console.log(e.target.checked)}>
-                Remember me
-              </Checkbox>
+              {/* <Checkbox>Remember me</Checkbox> */}
               <Link color={"blue.400"}>Forgot password?</Link>
             </Stack>
             <Button
