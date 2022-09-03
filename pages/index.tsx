@@ -1,8 +1,10 @@
 import {
   Box,
   Flex,
+  Skeleton,
   SkeletonCircle,
   SkeletonText,
+  Spinner,
   Stack,
 } from "@chakra-ui/react";
 import { User } from "@prisma/client";
@@ -11,9 +13,11 @@ import { useState } from "react";
 import AuthForm from "../components/AuthForm";
 import CreatePost from "../components/CreatePost";
 import Post from "../components/Post";
+import useMe from "../hooks";
 import usePost from "../hooks/usePost";
 import { validateToken } from "../lib/Auth";
-const Home: NextPage<{ userObj: User | null }> = ({ userObj }) => {
+const Home: NextPage<{ userObj: User | null }> = ({}) => {
+  const { userObj, isError, isLoading } = useMe();
   const [loggedIn, setLoggedIn] = useState<boolean>(false);
   const { posts, isLoading: isloadindPosts, isError: isErrorPosts } = usePost();
   const CustomSkeleton = () => {
@@ -24,9 +28,18 @@ const Home: NextPage<{ userObj: User | null }> = ({ userObj }) => {
       </Box>
     );
   };
+  console.log({ userObj, isError, isLoading });
   return (
     <div>
-      {userObj === null ? <AuthForm /> : <CreatePost />}
+      {isLoading ? (
+        <Box w={100} mx={"auto"}>
+          <Spinner size={"xl"} mt={10} speed={".7s"} color={"green.500"} />
+        </Box>
+      ) : userObj == null ? (
+        <AuthForm />
+      ) : (
+        <CreatePost />
+      )}
 
       <Flex justify={"center"} align="center">
         <Stack mx={"auto"} spacing={0} width={1200} py={12} px={6}>
@@ -48,18 +61,18 @@ const Home: NextPage<{ userObj: User | null }> = ({ userObj }) => {
 
 export default Home;
 
-export const getServerSideProps: GetServerSideProps = async ({ req }) => {
-  const token = req.cookies.T_ACCESS_TOKEN || req.headers.authorization;
-  let userObj = null;
-  try {
-    userObj = await validateToken(token);
-  } catch (error) {
-    // eslint-disable-next-line no-console
-    console.error(error);
-  }
-  return {
-    props: {
-      userObj,
-    },
-  };
-};
+// export const getServerSideProps: GetServerSideProps = async ({ req }) => {
+//   const token = req.cookies.T_ACCESS_TOKEN || req.headers.authorization;
+//   let userObj = null;
+//   try {
+//     userObj = await validateToken(token);
+//   } catch (error) {
+//     // eslint-disable-next-line no-console
+//     console.error(error);
+//   }
+//   return {
+//     props: {
+//       userObj,
+//     },
+//   };
+// };
