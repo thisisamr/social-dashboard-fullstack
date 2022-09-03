@@ -11,7 +11,6 @@ import { useState } from "react";
 import AuthForm from "../components/AuthForm";
 import CreatePost from "../components/CreatePost";
 import Post from "../components/Post";
-import useMe from "../hooks";
 import usePost from "../hooks/usePost";
 import { validateToken } from "../lib/Auth";
 const Home: NextPage<{ userObj: User | null }> = ({ userObj }) => {
