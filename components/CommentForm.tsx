@@ -13,9 +13,9 @@ import {
 import { HiOutlineAnnotation } from "react-icons/hi";
 import { createComment } from "../lib/createCommentFetcher";
 import { mutate } from "swr";
-import { CheckIcon } from "@chakra-ui/icons";
+import { CheckCircleIcon, CheckIcon } from "@chakra-ui/icons";
 const CommentForm: FC<{ id: number }> = ({ id }) => {
-  const [text, settext] = useState("");
+  const [text, setText] = useState("");
   const { userObj, isError, isLoading } = useMe();
   const toast = useToast();
   const color = useColorModeValue("white", "gray.700");
@@ -45,21 +45,25 @@ const CommentForm: FC<{ id: number }> = ({ id }) => {
             e.preventDefault();
             try {
               setLoading(true);
-              await createComment("comment/create", { pid: id, text });
+              const response = await createComment("comment/create", {
+                pid: id,
+                text,
+              });
+              if (response.error) {
+                throw new Error(response.error);
+              }
               setLoading(false);
               toast({
-                status: "success",
-                position: "top",
+                position: "bottom",
+                icon: <CheckCircleIcon color={"blue"} />,
                 isClosable: true,
-                colorScheme: "orange",
-                title: <CheckIcon />,
-                description: "🚀 Nice",
+                description: "you just added a comment",
+                duration: 1500,
               });
-              const response = await mutate("comment/getAllByPostId");
-              console.log(response);
+              setText("");
+              await mutate(`comment/postId/${id}`);
             } catch (error: any) {
               setLoading(false);
-              console.log(error);
               toast({
                 status: "error",
               });
@@ -68,7 +72,7 @@ const CommentForm: FC<{ id: number }> = ({ id }) => {
         >
           <Input
             value={text}
-            onChange={(e) => settext(e.target.value)}
+            onChange={(e) => setText(e.target.value)}
             type="text"
             rounded={"full"}
             bg={useColorModeValue("gray.100", "gray.600")}

@@ -1,5 +1,5 @@
+import { CheckCircleIcon, CheckIcon, WarningIcon } from "@chakra-ui/icons";
 import {
-  Box,
   Button,
   Container,
   Flex,
@@ -11,16 +11,14 @@ import {
   useColorModeValue,
   useToast,
 } from "@chakra-ui/react";
-import React, { useState } from "react";
-import { createPost } from "../lib/createPostfetcher";
-import { CheckCircleIcon, CheckIcon, WarningIcon } from "@chakra-ui/icons";
+import { FormEvent, useState } from "react";
 import { mutate } from "swr";
+import { createPost } from "../lib/createPostfetcher";
 
 const CreatePost = () => {
   const toast = useToast();
   const [submitted, setSubmitted] = useState(false);
   const [text, setText] = useState("");
-  const [state, setState] = useState("initial");
   const [loading, setIsloading] = useState(false);
   return (
     <Flex minH={"20vh"} align={"center"} justify="center">
@@ -37,12 +35,13 @@ const CreatePost = () => {
         <Heading fontSize={{ base: "xl", sm: "2xl" }} textAlign="center" mb={5}>
           Speak your Mind
         </Heading>
+
         <Stack
           direction={{ base: "column", md: "row" }}
           alignItems="center"
           as={"form"}
           spacing={"12px"}
-          onSubmit={async (e) => {
+          onSubmit={async (e: FormEvent<HTMLDivElement>) => {
             e.preventDefault();
             try {
               setIsloading(true);
@@ -88,8 +87,8 @@ const CreatePost = () => {
               color={"gray.800"}
               borderWidth={1}
               borderColor={useColorModeValue("gray.300", "gray.700")}
-              type="text"
               required
+              type={"text"}
               placeholder="what's on your mind ?"
               _placeholder={{ color: "gray.400" }}
               value={text}
