@@ -28,7 +28,6 @@ const Home: NextPage<{ userObj: User | null }> = ({}) => {
       </Box>
     );
   };
-  console.log({ userObj, isError, isLoading });
   return (
     <div>
       {isLoading ? (
