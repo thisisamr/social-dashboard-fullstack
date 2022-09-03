@@ -10,7 +10,7 @@ const useMe = (): {
   const { data, error } = useSWR<User | null, any>("me", fetcher);
   return {
     userObj: data,
-    isLoading: !data && !error,
+    isLoading: !data && data !== null && !error,
     isError: error,
   };
 };
