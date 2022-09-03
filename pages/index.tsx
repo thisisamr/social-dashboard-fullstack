@@ -54,6 +54,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
   try {
     userObj = await validateToken(token);
   } catch (error) {
+    // eslint-disable-next-line no-console
     console.error(error);
   }
   return {
