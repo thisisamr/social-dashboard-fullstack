@@ -9,17 +9,16 @@ export default async function handler(
 ) {
   const token = req.cookies.T_ACCESS_TOKEN || req.headers.authorization;
   if (!token) {
-    return res.status(401).json({ message: "no auth" });
+    return res.status(401).json({ error: "no auth" });
   }
   if (req.method !== "POST") {
-    return res.status(404).json({ message: "unsupported http verb" });
+    return res.status(404).json({ error: "unsupported http verb" });
   }
   try {
     const user = await validateToken(token);
     const { text, pid } = req.body;
-
-    if (!text || text.length == 0) {
-      return res.status(400).json({ message: "Bad input" });
+    if (!text || text.length == 0 || !pid) {
+      return res.status(400).json({ error: "Bad input" });
     }
     const commentCreated = await prisma.comment.create({
       data: {
@@ -27,13 +26,14 @@ export default async function handler(
         post: { connect: { id: +pid } },
         author: {
           connect: {
-            id: user.id as number,
+            id: user?.id as number,
           },
         },
       },
     });
+
     return res.status(201).json(commentCreated);
   } catch (error: Error | any) {
-    return res.status(401).json({ error: error.message });
+    return res.status(400).json({ error: error.message });
   }
 }
