@@ -5,7 +5,6 @@ import { jwtUser, NextApiHandlerExtended } from "./types";
 import { prisma } from "../prisma/prisma";
 import { User } from "@prisma/client";
 
-// there is a bug here we should return null or empty object as the unauthorized user
 const validateAuth = (
   controller: NextApiHandlerExtended
 ): NextApiHandlerExtended => {
@@ -41,10 +40,18 @@ const validateAuth = (
 
 export default validateAuth;
 
-export const validateToken = async (token: string) => {
+export const validateToken = async (
+  token: string | undefined
+): Promise<User | null> => {
+  if (!token) {
+    return null;
+  }
   const { payload } = await jose.jwtVerify(
     token,
     new TextEncoder().encode(process.env.TOKENSECRET)
   );
-  return payload;
+  const isarealuser = await prisma.user.findUnique({
+    where: { email: payload?.email as string },
+  });
+  return isarealuser as User;
 };
