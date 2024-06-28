@@ -26,7 +26,7 @@ export default async function handler(
         text,
         auhtor: {
           connect: {
-            email: user.email as string,
+            email: user?.email as string,
           },
         },
       },

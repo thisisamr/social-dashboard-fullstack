@@ -4,13 +4,14 @@ import cookie from "cookie";
 import { prisma } from "../../prisma/prisma";
 import { NextApiRequest, NextApiResponse } from "next";
 import { isInt8Array } from "util/types";
+import { PrismaClientInitializationError } from "@prisma/client/runtime";
 const signin = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method !== "POST") {
     return res.status(404).json({ message: "unsupported http verb" });
   }
   const { email, password } = req.body;
   if (!email || !password) {
-    return res.status(400).json({ message: "invalid user input" });
+    return res.status(400).json({ error: "invalid user input" });
   }
   try {
     const user = await prisma.user.findUnique({
@@ -41,11 +42,10 @@ const signin = async (req: NextApiRequest, res: NextApiResponse) => {
         createdAt: user.createdat,
       });
     } else {
-      res.status(401).json({ message: "user or password is incorrect" });
+      res.status(401).json({ error: "user or password is incorrect" });
     }
   } catch (error: Error | any) {
-    console.log(error);
-    return res.status(500).json({ message: error.message });
+    return res.status(500).json({ error: error });
   }
 };
 export default signin;

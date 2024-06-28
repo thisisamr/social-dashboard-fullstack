@@ -13,8 +13,9 @@ import {
 import { HiOutlineAnnotation } from "react-icons/hi";
 import { createComment } from "../lib/createCommentFetcher";
 import { mutate } from "swr";
+import { CheckCircleIcon, CheckIcon } from "@chakra-ui/icons";
 const CommentForm: FC<{ id: number }> = ({ id }) => {
-  const [text, settext] = useState("");
+  const [text, setText] = useState("");
   const { userObj, isError, isLoading } = useMe();
   const toast = useToast();
   const color = useColorModeValue("white", "gray.700");
@@ -36,10 +37,42 @@ const CommentForm: FC<{ id: number }> = ({ id }) => {
             Throw a comment
           </Text>
         </Stack>
-        <Stack>
+        <Stack
+          direction={"row"}
+          w={"full"}
+          as="form"
+          onSubmit={async (e) => {
+            e.preventDefault();
+            try {
+              setLoading(true);
+              const response = await createComment("comment/create", {
+                pid: id,
+                text,
+              });
+              if (response.error) {
+                throw new Error(response.error);
+              }
+              setLoading(false);
+              toast({
+                position: "bottom",
+                icon: <CheckCircleIcon color={"blue"} />,
+                isClosable: true,
+                description: "you just added a comment",
+                duration: 1500,
+              });
+              setText("");
+              await mutate(`comment/postId/${id}`);
+            } catch (error: any) {
+              setLoading(false);
+              toast({
+                status: "error",
+              });
+            }
+          }}
+        >
           <Input
             value={text}
-            onChange={(e) => settext(e.target.value)}
+            onChange={(e) => setText(e.target.value)}
             type="text"
             rounded={"full"}
             bg={useColorModeValue("gray.100", "gray.600")}
@@ -51,21 +84,7 @@ const CommentForm: FC<{ id: number }> = ({ id }) => {
             }}
           />
           <Button
-            onClick={async () => {
-              try {
-                setLoading(true);
-                await createComment("comment/create", { pid: id, text });
-                setLoading(false);
-                toast({ status: "success", position: "top" });
-                mutate("post/");
-              } catch (error: any) {
-                setLoading(false);
-                console.log(error);
-                toast({
-                  status: "error",
-                });
-              }
-            }}
+            type="submit"
             bg={"blue.400"}
             rounded={"full"}
             color="white"

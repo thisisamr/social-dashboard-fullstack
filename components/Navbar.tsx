@@ -14,26 +14,28 @@ import {
 } from "@chakra-ui/react";
 import { useState } from "react";
 import useMe from "../hooks";
-import { Disabled_Profile_Text } from "../utils/constants";
 import LogOutButton from "./LogOutButton";
 import NavLink from "./NavLink";
 
 const Navbar = () => {
   const { colorMode, toggleColorMode } = useColorMode();
   const { userObj, isLoading, isError } = useMe();
-  const [loggedIn, setIsloggedIn] = useState(false);
-
   return (
-    <Box bg={useColorModeValue("gray.100", "gray.900")} px={4}>
+    <Box
+      bg={useColorModeValue("gray.100", "gray.900")}
+      px={4}
+      position="sticky"
+      top={0}
+    >
       <Flex h={16} alignItems="center" justifyContent={"space-between"}>
         <HStack spacing={8} alignItems="center">
           <NavLink to="/" mr={4}>
             Home
           </NavLink>
           <Tooltip
-            isDisabled={userObj == null ? true : false}
+            isDisabled={userObj == null ? false : true}
             hasArrow
-            label={"Disabled_Profile_Text"}
+            label={"please login"}
             background={"red.600"}
           >
             <HStack
@@ -41,7 +43,7 @@ const Navbar = () => {
               spacing={4}
               display={{ base: "none", md: "flex" }}
             >
-              <div className={userObj !== null ? "" : "link-disabled"}>
+              <div className={userObj ? "" : "link-disabled"}>
                 <NavLink to={"/profile"} mr={4}>
                   Profile
                 </NavLink>
@@ -51,7 +53,7 @@ const Navbar = () => {
         </HStack>
         <Flex alignItems={"center"}>
           <Stack direction={"row"} spacing={7}>
-            {userObj == null ? (
+            {!userObj ? (
               <Stack direction={"row"} alignItems="center">
                 <Box>
                   <Badge variant={"outline"} colorScheme={"red"}>
@@ -73,7 +75,7 @@ const Navbar = () => {
                 mr={2}
                 mt={2}
                 fontSize={"xs"}
-                isDisabled={userObj == null}
+                isDisabled={!userObj}
                 hasArrow
                 label={userObj?.email}
                 bg={"green.600"}
@@ -81,10 +83,11 @@ const Navbar = () => {
                 <Avatar
                   size={"sm"}
                   src={userObj?.imageurl as string | undefined}
+                  name={userObj?.firstname}
                 >
                   <AvatarBadge
                     boxSize={"1.25em"}
-                    bg={userObj !== null ? "green.500" : "tomato"}
+                    bg={userObj ? "green.500" : "tomato"}
                   ></AvatarBadge>
                 </Avatar>
               </Tooltip>

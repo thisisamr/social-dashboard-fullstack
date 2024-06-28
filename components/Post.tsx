@@ -9,16 +9,18 @@ import {
   useColorModeValue,
 } from "@chakra-ui/react";
 import router from "next/router";
-import React from "react";
+import React, { useState } from "react";
 import { IPostWithAutherCommentsLikes } from "../lib/types";
+import CommentButton from "./CommentButton";
 import DeleteButton from "./DeleteButton";
+import Likebutton from "./LikeButton";
 
 const Post: React.FC<{ post: IPostWithAutherCommentsLikes; me?: string }> = ({
   post,
   me,
 }) => {
   const color = useColorModeValue("white", "gray.900");
-
+  const [numberoflikes, setNumberoflikes] = useState(post?.likes?.length);
   return (
     <Center py={6}>
       <Box
@@ -40,7 +42,9 @@ const Post: React.FC<{ post: IPostWithAutherCommentsLikes; me?: string }> = ({
           >
             Post
           </Text>
-          <Text color={"gray.500"}>{post.text}</Text>
+          <Text color={"gray.500"} noOfLines={2}>
+            {post.text}
+          </Text>
         </Stack>
         <Stack mt={10} direction={"row"} spacing={4} align={"center"}>
           <Avatar
@@ -60,15 +64,19 @@ const Post: React.FC<{ post: IPostWithAutherCommentsLikes; me?: string }> = ({
         <Stack direction={"row"} spacing={6} justify="center">
           <Stack spacing={0} align={"center"}>
             <Text fontSize={"sm"} color={"gray.500"}>
-              {post?.likes?.length}
+              {numberoflikes}
             </Text>
-            {/**likes button */}
+            <Likebutton
+              pid={post?.id}
+              authorEmail={me}
+              setNumberoflikes={setNumberoflikes}
+            />
           </Stack>
           <Stack spacing={0} align="center">
             <Text fontSize={"sm"} color={"gray.500"}>
               {post?.comments?.length}
             </Text>
-            {/**comment icon */}
+            <CommentButton pid={post?.id} />
           </Stack>
         </Stack>
         <Flex justify={"center"} mt={4}>
